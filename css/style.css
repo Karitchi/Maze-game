@@ -1,0 +1,30 @@
+*{
+  margin: 0;
+}
+form{
+  margin: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+table{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-spacing: 0px;
+}
+tbody{
+  border: 1px solid;
+}
+td{
+  height: 40px;
+  width: 40px;
+  border: 1px solid;
+  background-color: white;
+}
+h1{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px;
+}

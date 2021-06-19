@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+  <meta charset="UTF-8">
+  <title>pixel painter</title>
+  <script src="js/app.js"></script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+  <header>
+    <h1>pixel painter</h1>
+    <form id="formGrid" onsubmit="return makeGrid(this)">
+      <label for="rows">Hauteur <br></label>
+      <input name="rows" id="rows" type="number" value="10" min="1" max="20">
+      <br>
+
+      <label for="cols">Largeur <br></label>
+      <input name="cols" id="cols" type="number" value="10" min="1" max="20">
+      <br>
+
+      <button type="submit">Générer</button>
+    </form>
+  </header>
+
+  <main id="mainGrid">
+
+  </main>
+</body>
+
+</html>
