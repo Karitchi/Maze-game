@@ -11,8 +11,6 @@ function makeGrid(form) {
   let x = form.cols.value;
   let y = form.rows.value;
   let buildTable = "";
-  let character;
-
 
   for (let i = 0; i < y; i++) {
     buildTable += `<tr id="R${i}">`;
@@ -31,130 +29,186 @@ function makeGrid(form) {
 
 
 
-function makeCells(x, y) {
+function makeCells(width, height) {
   let randomDirection = 0;
   let visitedCells = 0;
   let cells = [];
-  let positions = [];
-  let possiblePath = [];
+  let stack = [];
+  let neighbors = [];
   let nextPosition = [];
 
-  for (let i = 0; i < y; i++) {
-    for (let j = 0; j < x; j++) {
-      cells.push([j, i, true]);
+  for (let y = 0; y < height; y++) {
+    for (let x = 0; x < width; x++) {
+      cells.push([x, y]);
     }
   }
+  console.log(cells);
 
-  cells[0][2] = false;
-  positions.push(cells[0]);
+  stack.push([...cells[0]]);
+  cells[0].push(true);
   visitedCells++;
 
-  document.getElementById(
-    `${positions[positions.length - 1][0]}${positions[positions.length - 1][1]}`
-  );
-  // ${positions[positions.length - 1][0]}
-  // ${positions[positions.length - 1][1]}
 
-  console.log(positions);
-  console.log(visitedCells);
 
   while (visitedCells < cells.length) {
-    possiblePath = [];
-    document.getElementById(
-      `${positions[positions.length - 1][0]}${positions[positions.length - 1][1]}`
-    ).style.backgroundColor = "red";
+    neighbors = [];
 
-    // Vérifie si il-y-à une cellule au dessus
-    if (positions[positions.length - 1][1] > 0) {
-      // Cherche la cellule du dessus
-      for (const element of cells) {
-        // element[1] = y des cells positions[positions.length - 1][1] = le y de la position actuelle
-        if (
-          element[0] === positions[positions.length - 1][0] &&
-          element[1] === positions[positions.length - 1][1] - 1 &&
-          element[2]
-        ) {
-          possiblePath.push(0);
-          break;
-        }
+    // la détection des bons voisins ne fonctionns pas
+    for (const element of cells) {
+      // north
+      if (
+        element[1] === stack[stack.length - 1][1] - 1 &&
+        element[0] === stack[stack.length - 1][0] &&
+        !element[2]
+      ) {
+        neighbors.push(0);
+      }
+      // South
+      if (
+        element[1] === stack[stack.length - 1][1] + 1 &&
+        element[0] === stack[stack.length - 1][0] &&
+        !element[2]
+      ) {
+        neighbors.push(2);
+      }
+      // east
+      if (
+        element[0] === stack[stack.length - 1][0] + 1 &&
+        element[1] === stack[stack.length - 1][1] &&
+        !element[2]
+      ) {
+        neighbors.push(1);
+      }
+      // west
+      if (
+        element[0] === stack[stack.length - 1][0] - 1 &&
+        element[1] === stack[stack.length - 1][1] &&
+        !element[2]
+      ) {
+        neighbors.push(3);
       }
     }
 
-    // Vérifie si il-y-à une cellule en dessous
-    if (positions[positions.length - 1][1] < y - 1) {
-      // Cherche la cellule du desous
-      for (const element of cells) {
-        // element[1] = y des cells positions[positions.length - 1][1] = le y de la position actuelle
-        if (
-          element[0] === positions[positions.length - 1][0] &&
-          element[1] === positions[positions.length - 1][1] + 1 &&
-          element[2]) {
-          possiblePath.push(2);
-          break;
-        }
-      }
-    }
+    neighbors.length > 0 ?
+      randomDirection = Math.floor(Math.random() * neighbors.length) :
+      randomDirection = -1;
 
-    // Vérifie si il-y-à une cellule à droite
-    if (positions[positions.length - 1][0] < x - 1) {
-      // Cherche la cellule de droite
-      for (const element of cells) {
-        // element[1] = y des cells positions[positions.length - 1][1] = le y de la position actuelle
-        if (
-          element[0] === positions[positions.length - 1][0] + 1 &&
-          element[1] === positions[positions.length - 1][1] &&
-          element[2]) {
-          possiblePath.push(1);
-          break;
-        }
-      }
-    }
 
-    // Vérifie si il-y-à une cellule à gauche
-    if (positions[positions.length - 1][0] > 0) {
-      // Cherche la cellule de gauche
-      for (const element of cells) {
-        // element[1] = y des cells positions[positions.length - 1][1] = le y de la position actuelle
-        if (
-          element[0] === positions[positions.length - 1][0] - 1 &&
-          element[1] === positions[positions.length - 1][1] &&
-          element[2]) {
-          possiblePath.push(4);
-          break;
-        }
-      }
-    }
-
-    // Génère un nombre aléatoire selon le nombre de chemin possible
-    randomDirection = Math.floor(Math.random() * possiblePath.length);
-
-    // Ajoute la nouvelle position dans positions
-    switch (possiblePath[randomDirection]) {
+    // nextPosition++ ne fonctionne pas 
+    switch (neighbors[randomDirection]) {
       case 0:
-        nextPosition = positions[positions.length - 1].slice();
-        nextPosition[1]--;
-        positions.push(nextPosition);
+        nextPosition[0] = [...stack[stack.length - 1]];
+        nextPosition[0][1]--;
+        stack.push([...nextPosition[0]]);
         visitedCells++;
+
+        for (const element of cells) {
+          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
+            element.push(true);
+            break;
+          }
+        }
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.borderBottom = "none";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.borderTop = "none";
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.backgroundColor = "red";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.backgroundColor = "white";
+
         break;
       case 1:
-        nextPosition = positions[positions.length - 1].slice();
-        nextPosition[0]++;
-        positions.push(nextPosition);
+        nextPosition[0] = [...stack[stack.length - 1]];
+        nextPosition[0][0]++;
+        stack.push([...nextPosition[0]]);
         visitedCells++;
+
+        for (const element of cells) {
+          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
+            element.push(true);
+            break;
+          }
+        }
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.borderLeft = "none";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.borderRight = "none";
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.backgroundColor = "red";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.backgroundColor = "white";
+
         break;
       case 2:
-        nextPosition = positions[positions.length - 1].slice();
-        nextPosition[1]++;
-        positions.push(nextPosition);
+        nextPosition[0] = [...stack[stack.length - 1]];
+        nextPosition[0][1]++;
+        stack.push([...nextPosition[0]]);
         visitedCells++;
+
+        for (const element of cells) {
+          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
+            element.push(true);
+            break;
+          }
+        }
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.borderTop = "none";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.borderBottom = "none";
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.backgroundColor = "red";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.backgroundColor = "white";
+
+        break;
+      case 3:
+        nextPosition[0] = [...stack[stack.length - 1]];
+        nextPosition[0][0]--;
+        stack.push([...nextPosition[0]]);
+        visitedCells++;
+
+        for (const element of cells) {
+          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
+            element.push(true);
+            break;
+          }
+        }
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.borderRight = "none";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.borderLeft = "none";
+
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.backgroundColor = "red";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.backgroundColor = "white";
+
         break;
 
       default:
-        nextPosition = positions[positions.length - 1].slice();
-        nextPosition[0]--;
-        positions.push(nextPosition);
-        visitedCells++;
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+          .style.backgroundColor = "white";
+
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+          .style.backgroundColor = "red";
+
+        stack.pop();
     }
   }
-  console.log(positions);
 }
