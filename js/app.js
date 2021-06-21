@@ -16,7 +16,7 @@ function makeGrid(form) {
     buildTable += `<tr id="R${i}">`;
     for (let j = 0; j < x; j++) {
       buildTable +=
-        `<td id="${j}${i}"></td>`;
+        `<td id="x${j}y${i}"></td>`;
     }
     buildTable += `</tr>`;
   }
@@ -26,8 +26,6 @@ function makeGrid(form) {
 
   return false;
 }
-
-
 
 function makeCells(width, height) {
   let randomDirection = 0;
@@ -116,14 +114,6 @@ function makeCells(width, height) {
 
       default:
         moveToTheNextCell(0, 0, 0, -1);
-      // document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-      //   .style.backgroundColor = "white";
-
-      // document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-      //   .style.backgroundColor = "red";
-
-      // stack.pop();
-
     }
   }
 
@@ -151,8 +141,8 @@ function makeCells(width, height) {
       lastCell = stack[stack.length - 2];
 
       // Set the id
-      currentCellId = document.getElementById(`${currentCell[0]}${currentCell[1]}`);
-      lastCellId = document.getElementById(`${lastCell[0]}${lastCell[1]}`);
+      currentCellId = document.getElementById(`x${currentCell[0]}y${currentCell[1]}`);
+      lastCellId = document.getElementById(`x${lastCell[0]}y${lastCell[1]}`);
 
       // Search the current cell and mark it as visited
       for (const element of cells) {
@@ -194,8 +184,8 @@ function makeCells(width, height) {
 
         currentCell = stack[stack.length - 1];
 
-        currentCellId = document.getElementById(`${currentCell[0]}${currentCell[1]}`);
-        lastCellId = document.getElementById(`${lastCell[0]}${lastCell[1]}`);
+        currentCellId = document.getElementById(`x${currentCell[0]}y${currentCell[1]}`);
+        lastCellId = document.getElementById(`x${lastCell[0]}y${lastCell[1]}`);
     }
 
     // Change the visual position of the character
