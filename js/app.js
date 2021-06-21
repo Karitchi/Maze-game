@@ -36,6 +36,11 @@ function makeCells(width, height) {
   let stack = [];
   let neighbors = [];
   let nextPosition = [];
+  let currentCellId;
+  let lastCellId;
+  let currentCell;
+  let lastCell;
+
 
   for (let y = 0; y < height; y++) {
     for (let x = 0; x < width; x++) {
@@ -48,12 +53,10 @@ function makeCells(width, height) {
   cells[0].push(true);
   visitedCells++;
 
-
-
   while (visitedCells < cells.length) {
     neighbors = [];
 
-    // la détection des bons voisins ne fonctionns pas
+    // Neighbors detection
     for (const element of cells) {
       // north
       if (
@@ -94,111 +97,90 @@ function makeCells(width, height) {
       randomDirection = -1;
 
 
-    // nextPosition++ ne fonctionne pas 
+
+
+
+
+
+    function moveToTheNextCell(position1, position2, operation, direction) {
+      nextPosition[0] = [...stack[stack.length - 1]];
+
+      operation ?
+        nextPosition[position1][position2]++ :
+        nextPosition[position1][position2]--;
+
+      stack.push([...nextPosition[0]]);
+      visitedCells++;
+
+      for (const element of cells) {
+        if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
+          element.push(true);
+          break;
+        }
+      }
+
+      currentCellId =
+        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`);
+      lastCellId =
+        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`);
+
+      switch (direction) {
+        case 0:
+          currentCellId.style.borderBottom = "none";
+
+          lastCellId.style.borderTop = "none";
+          break;
+
+        case 1:
+          currentCellId.style.borderLeft = "none";
+
+          lastCellId.style.borderRight = "none";
+          break;
+        case 2:
+
+          currentCellId.style.borderTop = "none";
+
+          lastCellId.style.borderBottom = "none";
+          break;
+
+        case 3:
+          currentCellId.style.borderRight = "none";
+
+          lastCellId.style.borderLeft = "none";
+          break;
+
+        default:
+          break;
+      }
+
+      document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+        .style.backgroundColor = "red";
+
+      document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+        .style.backgroundColor = "white";
+    }
+
+
+
+
+
+
+    // moving the character
     switch (neighbors[randomDirection]) {
       case 0:
-        nextPosition[0] = [...stack[stack.length - 1]];
-        nextPosition[0][1]--;
-        stack.push([...nextPosition[0]]);
-        visitedCells++;
-
-        for (const element of cells) {
-          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
-            element.push(true);
-            break;
-          }
-        }
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.borderBottom = "none";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.borderTop = "none";
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.backgroundColor = "red";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.backgroundColor = "white";
-
+        moveToTheNextCell(0, 1, 0, 0);
         break;
+
       case 1:
-        nextPosition[0] = [...stack[stack.length - 1]];
-        nextPosition[0][0]++;
-        stack.push([...nextPosition[0]]);
-        visitedCells++;
-
-        for (const element of cells) {
-          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
-            element.push(true);
-            break;
-          }
-        }
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.borderLeft = "none";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.borderRight = "none";
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.backgroundColor = "red";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.backgroundColor = "white";
-
+        moveToTheNextCell(0, 0, 1, 1);
         break;
+
       case 2:
-        nextPosition[0] = [...stack[stack.length - 1]];
-        nextPosition[0][1]++;
-        stack.push([...nextPosition[0]]);
-        visitedCells++;
-
-        for (const element of cells) {
-          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
-            element.push(true);
-            break;
-          }
-        }
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.borderTop = "none";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.borderBottom = "none";
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.backgroundColor = "red";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.backgroundColor = "white";
-
+        moveToTheNextCell(0, 1, 1, 2);
         break;
+
       case 3:
-        nextPosition[0] = [...stack[stack.length - 1]];
-        nextPosition[0][0]--;
-        stack.push([...nextPosition[0]]);
-        visitedCells++;
-
-        for (const element of cells) {
-          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
-            element.push(true);
-            break;
-          }
-        }
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.borderRight = "none";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.borderLeft = "none";
-
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.backgroundColor = "red";
-
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.backgroundColor = "white";
-
+        moveToTheNextCell(0, 0, 0, 3);
         break;
 
       default:
