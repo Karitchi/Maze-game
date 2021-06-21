@@ -45,7 +45,6 @@ function makeCells(width, height) {
       cells.push([x, y]);
     }
   }
-  console.log(cells);
 
   stack.push([...cells[0]]);
   cells[0].push(true);
@@ -115,6 +114,8 @@ function makeCells(width, height) {
       default:
         moveToTheNextCell(0, 0, 0, -1);
     }
+
+
   }
 
   // Move the character
@@ -153,28 +154,30 @@ function makeCells(width, height) {
       }
     }
 
-
-
     // Remove the walls
     switch (direction) {
       case 0:
         currentCellId.style.borderBottom = "none";
         lastCellId.style.borderTop = "none";
+        lastCellId.style.backgroundColor = "white";
         break;
 
       case 1:
         currentCellId.style.borderLeft = "none";
         lastCellId.style.borderRight = "none";
+        lastCellId.style.backgroundColor = "white";
         break;
       case 2:
 
         currentCellId.style.borderTop = "none";
         lastCellId.style.borderBottom = "none";
+        lastCellId.style.backgroundColor = "white";
         break;
 
       case 3:
         currentCellId.style.borderRight = "none";
         lastCellId.style.borderLeft = "none";
+        lastCellId.style.backgroundColor = "white";
         break;
 
       default:
@@ -186,6 +189,7 @@ function makeCells(width, height) {
 
         currentCellId = document.getElementById(`x${currentCell[0]}y${currentCell[1]}`);
         lastCellId = document.getElementById(`x${lastCell[0]}y${lastCell[1]}`);
+        lastCellId.style.backgroundColor = "white";
     }
 
     // Change the visual position of the character
@@ -193,3 +197,4 @@ function makeCells(width, height) {
     lastCellId.style.backgroundColor = "white";
   }
 }
+
