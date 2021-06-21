@@ -96,76 +96,7 @@ function makeCells(width, height) {
       randomDirection = Math.floor(Math.random() * neighbors.length) :
       randomDirection = -1;
 
-
-
-
-
-
-
-    function moveToTheNextCell(position1, position2, operation, direction) {
-      nextPosition[0] = [...stack[stack.length - 1]];
-
-      operation ?
-        nextPosition[position1][position2]++ :
-        nextPosition[position1][position2]--;
-
-      stack.push([...nextPosition[0]]);
-      visitedCells++;
-
-      for (const element of cells) {
-        if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
-          element.push(true);
-          break;
-        }
-      }
-
-      currentCellId =
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`);
-      lastCellId =
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`);
-
-      switch (direction) {
-        case 0:
-          currentCellId.style.borderBottom = "none";
-
-          lastCellId.style.borderTop = "none";
-          break;
-
-        case 1:
-          currentCellId.style.borderLeft = "none";
-
-          lastCellId.style.borderRight = "none";
-          break;
-        case 2:
-
-          currentCellId.style.borderTop = "none";
-
-          lastCellId.style.borderBottom = "none";
-          break;
-
-        case 3:
-          currentCellId.style.borderRight = "none";
-
-          lastCellId.style.borderLeft = "none";
-          break;
-
-        default:
-          break;
-      }
-
-      document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-        .style.backgroundColor = "red";
-
-      document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-        .style.backgroundColor = "white";
-    }
-
-
-
-
-
-
-    // moving the character
+    // Move the character
     switch (neighbors[randomDirection]) {
       case 0:
         moveToTheNextCell(0, 1, 0, 0);
@@ -184,13 +115,91 @@ function makeCells(width, height) {
         break;
 
       default:
-        document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
-          .style.backgroundColor = "white";
+        moveToTheNextCell(0, 0, 0, -1);
+      // document.getElementById(`${stack[stack.length - 1][0]}${stack[stack.length - 1][1]}`)
+      //   .style.backgroundColor = "white";
 
-        document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
-          .style.backgroundColor = "red";
+      // document.getElementById(`${stack[stack.length - 2][0]}${stack[stack.length - 2][1]}`)
+      //   .style.backgroundColor = "red";
+
+      // stack.pop();
+
+    }
+  }
+
+  // Move the character
+  function moveToTheNextCell(position1, position2, operation, direction) {
+    if (direction !== -1) {
+      // Set the current and last cell
+      currentCell = stack[stack.length - 1];
+      lastCell = stack[stack.length - 2];
+
+      // Store a copy of the current cell in next position
+      nextPosition[0] = [...currentCell];
+
+      // Increase or decrease x/y
+      operation ?
+        nextPosition[position1][position2]++ :
+        nextPosition[position1][position2]--;
+
+      // Push the new position in the stack
+      stack.push([...nextPosition[0]]);
+      visitedCells++;
+
+      // Update the current and last cell
+      currentCell = stack[stack.length - 1];
+      lastCell = stack[stack.length - 2];
+
+      // Set the id
+      currentCellId = document.getElementById(`${currentCell[0]}${currentCell[1]}`);
+      lastCellId = document.getElementById(`${lastCell[0]}${lastCell[1]}`);
+
+      // Search the current cell and mark it as visited
+      for (const element of cells) {
+        if (element[0] === currentCell[0] && element[1] === currentCell[1]) {
+          element.push(true);
+          break;
+        }
+      }
+    }
+
+
+
+    // Remove the walls
+    switch (direction) {
+      case 0:
+        currentCellId.style.borderBottom = "none";
+        lastCellId.style.borderTop = "none";
+        break;
+
+      case 1:
+        currentCellId.style.borderLeft = "none";
+        lastCellId.style.borderRight = "none";
+        break;
+      case 2:
+
+        currentCellId.style.borderTop = "none";
+        lastCellId.style.borderBottom = "none";
+        break;
+
+      case 3:
+        currentCellId.style.borderRight = "none";
+        lastCellId.style.borderLeft = "none";
+        break;
+
+      default:
+        lastCell = stack[stack.length - 1];
 
         stack.pop();
+
+        currentCell = stack[stack.length - 1];
+
+        currentCellId = document.getElementById(`${currentCell[0]}${currentCell[1]}`);
+        lastCellId = document.getElementById(`${lastCell[0]}${lastCell[1]}`);
     }
+
+    // Change the visual position of the character
+    currentCellId.style.backgroundColor = "red";
+    lastCellId.style.backgroundColor = "white";
   }
 }
