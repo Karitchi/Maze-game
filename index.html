@@ -5,22 +5,27 @@
   <meta charset="UTF-8">
   <title>Maze game</title>
   <script src="js/maze.js"></script>
+  <!-- <script src="js/game.js"></script> -->
   <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
   <header>
     <h1>Maze game</h1>
-    <form id="formGrid" onsubmit="return init(this)">
-      <label for="rows">height <br></label>
+    <form id="formGrid" onsubmit="return initMaze(this)">
+      <label for="rows">Height : <br></label>
       <input name="rows" id="rows" type="number" value="30" min="2" max="100">
       <br>
 
-      <label for="cols">Width <br></label>
+      <label for="cols">Width : <br></label>
       <input name="cols" id="cols" type="number" value="30" min="2" max="100">
       <br>
 
-      <button type="submit">generate</button>
+      <label for="ms">Delay : <br></label>
+      <input name="ms" id="ms" type="number" value="20" min="1" max="2000">
+      <br>
+
+      <button id="submit" type="submit">generate</button>
     </form>
   </header>
 

@@ -1,6 +1,6 @@
 "use strict";
 
-function init(form) {
+function initMaze(form) {
   let
     x = form.cols.value,
     y = form.rows.value,
@@ -9,6 +9,8 @@ function init(form) {
     stack = [],
     currentCellId,
     lastCellId;
+
+  document.getElementById("submit").disabled = true;
 
   createHTMLTable();
   function createHTMLTable() {
@@ -22,7 +24,7 @@ function init(form) {
     let buildTable = "";
 
     for (let i = 0; i < y; i++) {
-      buildTable += `<tr id="R${i}">`;
+      buildTable += `<tr>`;
       for (let j = 0; j < x; j++) {
         buildTable +=
           `<td id="x${j}y${i}"></td>`;
@@ -47,154 +49,212 @@ function init(form) {
     cells[0].push(true);
   }
 
-  do {
-    let neighbors = [];
+  containerForSleepFunction();
+  async function containerForSleepFunction() {
+    // The value of the delay
+    let ms = document.getElementById("ms").value;
 
-    searchNeighbors();
-    function searchNeighbors() {
-      for (const element of cells) {
-        // up
-        if (
-          element[1] === stack[stack.length - 1][1] - 1 &&
-          element[0] === stack[stack.length - 1][0] &&
-          !element[2]
-        ) {
-          neighbors.push(0);
-        }
-        // right
-        else if (
-          element[0] === stack[stack.length - 1][0] + 1 &&
-          element[1] === stack[stack.length - 1][1] &&
-          !element[2]
-        ) {
-          neighbors.push(1);
-        }
-        // down
-        else if (
-          element[1] === stack[stack.length - 1][1] + 1 &&
-          element[0] === stack[stack.length - 1][0] &&
-          !element[2]
-        ) {
-          neighbors.push(2);
-        }
-        // left
-        else if (
-          element[0] === stack[stack.length - 1][0] - 1 &&
-          element[1] === stack[stack.length - 1][1] &&
-          !element[2]
-        ) {
-          neighbors.push(3);
-        }
-      }
-    }
+    do {
+      let neighbors = [];
 
-    generatesRandomDirection();
-    function generatesRandomDirection() {
-      neighbors.length > 0 ?
-        randomDirection = Math.floor(Math.random() * neighbors.length) :
-        randomDirection = -1;
-    }
-
-    moveCharacter();
-    function moveCharacter() {
-      switch (neighbors[randomDirection]) {
-        case 0:
-          placeNextPositionInStack(1, 0, 0);
-          renderMaze(0);
-          break;
-
-        case 1:
-          placeNextPositionInStack(0, 1, 1);
-          renderMaze(1);
-          break;
-
-        case 2:
-          placeNextPositionInStack(1, 1, 2);
-          renderMaze(2);
-          break;
-
-        case 3:
-          placeNextPositionInStack(0, 0, 3);
-          renderMaze(3);
-          break;
-
-        default:
-          placeNextPositionInStack(null, null, null);
-          renderMaze(-1);
-      }
-    }
-
-    function placeNextPositionInStack(axis, operation, direction) {
-      if (direction !== null) {
-        let nextPosition;
-
-        // Store a copy of the current cell in next position
-        nextPosition = [...stack[stack.length - 1]];
-
-        // Increase or decrease x/y
-        operation ?
-          nextPosition[axis]++ :
-          nextPosition[axis]--;
-
-        // Push the new position in the stack
-        stack.push([...nextPosition]);
-
-        currentCellId = document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`);
-        lastCellId = document.getElementById(`x${stack[stack.length - 2][0]}y${stack[stack.length - 2][1]}`);
-
-        // Search the current cell and mark it as visited
+      searchNeighbors();
+      function searchNeighbors() {
         for (const element of cells) {
-          if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
-            element.push(true);
-            break;
+          // up
+          if (
+            element[1] === stack[stack.length - 1][1] - 1 &&
+            element[0] === stack[stack.length - 1][0] &&
+            !element[2]
+          ) {
+            neighbors.push(0);
+          }
+          // right
+          else if (
+            element[0] === stack[stack.length - 1][0] + 1 &&
+            element[1] === stack[stack.length - 1][1] &&
+            !element[2]
+          ) {
+            neighbors.push(1);
+          }
+          // down
+          else if (
+            element[1] === stack[stack.length - 1][1] + 1 &&
+            element[0] === stack[stack.length - 1][0] &&
+            !element[2]
+          ) {
+            neighbors.push(2);
+          }
+          // left
+          else if (
+            element[0] === stack[stack.length - 1][0] - 1 &&
+            element[1] === stack[stack.length - 1][1] &&
+            !element[2]
+          ) {
+            neighbors.push(3);
           }
         }
-      } else {
-        currentCellId = document.getElementById(`x${stack[stack.length - 2][0]}y${stack[stack.length - 2][1]}`);
-        lastCellId = document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`);
-        stack.pop();
       }
-    }
 
-    function renderMaze(direction) {
-      switch (direction) {
-        case 0:
-          currentCellId.style.borderBottom = "none";
-          lastCellId.style.borderTop = "none";
-          lastCellId.style.backgroundColor = "white";
-          currentCellId.style.backgroundColor = "red";
-          break;
-
-        case 1:
-          currentCellId.style.borderLeft = "none";
-          lastCellId.style.borderRight = "none";
-          lastCellId.style.backgroundColor = "white";
-          currentCellId.style.backgroundColor = "red";
-          break;
-        case 2:
-
-          currentCellId.style.borderTop = "none";
-          lastCellId.style.borderBottom = "none";
-          lastCellId.style.backgroundColor = "white";
-          currentCellId.style.backgroundColor = "red";
-          break;
-
-        case 3:
-          currentCellId.style.borderRight = "none";
-          lastCellId.style.borderLeft = "none";
-          lastCellId.style.backgroundColor = "white";
-          currentCellId.style.backgroundColor = "red";
-          break;
-
-        default:
-          lastCellId.style.backgroundColor = "white";
-          currentCellId.style.backgroundColor = "red";
+      generatesRandomDirection();
+      function generatesRandomDirection() {
+        neighbors.length > 0 ?
+          randomDirection = Math.floor(Math.random() * neighbors.length) :
+          randomDirection = -1;
       }
-    }
-  } while (stack.length !== 1);
 
-  // Place end point
-  document.getElementById(`x${x - 1}y${y - 1}`).style.backgroundColor = "green";
+      moveCharacter();
+      function moveCharacter() {
+        switch (neighbors[randomDirection]) {
+          case 0:
+            placeNextPositionInStack(1, 0, 0);
+            renderMaze(0);
+            break;
+
+          case 1:
+            placeNextPositionInStack(0, 1, 1);
+            renderMaze(1);
+            break;
+
+          case 2:
+            placeNextPositionInStack(1, 1, 2);
+            renderMaze(2);
+            break;
+
+          case 3:
+            placeNextPositionInStack(0, 0, 3);
+            renderMaze(3);
+            break;
+
+          default:
+            placeNextPositionInStack(null, null, null);
+            renderMaze(-1);
+        }
+      }
+
+      function placeNextPositionInStack(axis, operation, direction) {
+        if (direction !== null) {
+          let nextPosition;
+
+          // Store a copy of the current cell in next position
+          nextPosition = [...stack[stack.length - 1]];
+
+          // Increase or decrease x/y
+          operation ?
+            nextPosition[axis]++ :
+            nextPosition[axis]--;
+
+          // Push the new position in the stack
+          stack.push([...nextPosition]);
+
+          currentCellId = document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`);
+          lastCellId = document.getElementById(`x${stack[stack.length - 2][0]}y${stack[stack.length - 2][1]}`);
+
+          // Search the current cell and mark it as visited
+          for (const element of cells) {
+            if (element[0] === stack[stack.length - 1][0] && element[1] === stack[stack.length - 1][1]) {
+              element.push(true);
+              break;
+            }
+          }
+        } else {
+          currentCellId = document.getElementById(`x${stack[stack.length - 2][0]}y${stack[stack.length - 2][1]}`);
+          lastCellId = document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`);
+          stack.pop();
+        }
+      }
+
+      function renderMaze(direction) {
+        switch (direction) {
+          case 0:
+            currentCellId.style.borderBottom = "none";
+            lastCellId.style.borderTop = "none";
+            lastCellId.style.backgroundColor = "white";
+            currentCellId.style.backgroundColor = "red";
+            break;
+
+          case 1:
+            currentCellId.style.borderLeft = "none";
+            lastCellId.style.borderRight = "none";
+            lastCellId.style.backgroundColor = "white";
+            currentCellId.style.backgroundColor = "red";
+            break;
+          case 2:
+
+            currentCellId.style.borderTop = "none";
+            lastCellId.style.borderBottom = "none";
+            lastCellId.style.backgroundColor = "white";
+            currentCellId.style.backgroundColor = "red";
+            break;
+
+          case 3:
+            currentCellId.style.borderRight = "none";
+            lastCellId.style.borderLeft = "none";
+            lastCellId.style.backgroundColor = "white";
+            currentCellId.style.backgroundColor = "red";
+            break;
+
+          default:
+            currentCellId.style.backgroundColor = "red";
+            lastCellId.style.backgroundColor = "white";
+        }
+      }
+      await sleep(ms);
+    } while (stack.length !== 1);
+
+    // Place end point
+    document.getElementById(`x${x - 1}y${y - 1}`).style.backgroundColor = "green";
+    document.getElementById("submit").disabled = false;
+  }
+
+  function sleep(ms) {
+    return new Promise((resolve) => {
+      setTimeout(resolve, ms);
+    });
+  }
+
+
+
+  document.removeEventListener("keydown", move);
+  document.addEventListener("keydown", move);
+
+  function move(e) {
+    let key = e.key;
+
+    switch (key) {
+      case "ArrowUp":
+
+        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderTop === "none") {
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
+          stack[stack.length - 1][1]--;
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
+        }
+        break;
+
+      case "ArrowRight":
+        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderRight === "none") {
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
+          stack[stack.length - 1][0]++;
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
+        }
+        break;
+
+      case "ArrowDown":
+        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderBottom === "none") {
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
+          stack[stack.length - 1][1]++;
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
+        }
+        break;
+
+      case "ArrowLeft":
+        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderLeft === "none") {
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
+          stack[stack.length - 1][0]--;
+          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
+        }
+        break;
+    }
+  }
 
   return false;
 }
