@@ -203,7 +203,6 @@ function initMaze(form) {
 
     // Place end point
     document.getElementById(`x${x - 1}y${y - 1}`).style.backgroundColor = "green";
-    document.getElementById("submit").disabled = false;
   }
 
   function sleep(ms) {
@@ -211,61 +210,6 @@ function initMaze(form) {
       setTimeout(resolve, ms);
     });
   }
-
-
-
-  document.removeEventListener("keydown", move);
-  document.addEventListener("keydown", move);
-
-  function move(e) {
-    let key = e.key;
-
-    switch (key) {
-      case "ArrowUp":
-
-        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderTop === "none") {
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
-          stack[stack.length - 1][1]--;
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
-        }
-        break;
-
-      case "ArrowRight":
-        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderRight === "none") {
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
-          stack[stack.length - 1][0]++;
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
-        }
-        break;
-
-      case "ArrowDown":
-        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderBottom === "none") {
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
-          stack[stack.length - 1][1]++;
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
-        }
-        break;
-
-      case "ArrowLeft":
-        if (document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.borderLeft === "none") {
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "white";
-          stack[stack.length - 1][0]--;
-          document.getElementById(`x${stack[stack.length - 1][0]}y${stack[stack.length - 1][1]}`).style.backgroundColor = "red";
-        }
-        break;
-    }
-  }
-
+  game(x, y);
   return false;
 }
-
-
-
-
-
-
-
-
-
-
-

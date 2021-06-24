@@ -1,5 +1,6 @@
 "use strict";
-function game() {
+
+function game(x, y) {
   let currentPosition = [0, 0];
   document.addEventListener("keydown", move);
 
@@ -40,6 +41,11 @@ function game() {
           document.getElementById(`x${currentPosition[0]}y${currentPosition[1]}`).style.backgroundColor = "red";
         }
         break;
+    }
+    if (currentPosition[0] === x - 1 && currentPosition[1] === y - 1) {
+      document.removeEventListener("keydown", move);
+      document.getElementById("submit").disabled = false;
+      setTimeout(() => alert("congatulations"), 10);
     }
   }
 }
