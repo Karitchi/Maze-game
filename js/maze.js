@@ -15,7 +15,7 @@ function initMaze(form) {
   createHTMLTable();
   function createHTMLTable() {
 
-    document.getElementById("mainGrid").innerHTML =
+     document.getElementById("mainGrid").innerHTML =
       `<table id="tableGrid">
       <tbody id="tbodyGrid"></tbody>
       </table>`;
